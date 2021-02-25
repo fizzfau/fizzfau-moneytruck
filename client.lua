@@ -72,10 +72,6 @@ function Dispatch(coords)
     local street1 = GetStreetNameAtCoord(coords.x, coords.y, coords.z, Citizen.ResultAsInteger(), Citizen.ResultAsInteger())
     local streetName = (GetStreetNameFromHashKey(street1))
     local playerGender = "Kadın"
-    if ESX.PlayerData.charinfo.gender =="man" then
-        playerGender = "Erkek"
-    end
-    print(playerGender, streetName)
     TriggerServerEvent('esx_outlawalert:banka-arac', {
         x = ESX.Math.Round(coords.x, 1),
         y = ESX.Math.Round(coords.y, 1),
