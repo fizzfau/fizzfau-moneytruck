@@ -4,7 +4,7 @@ local robbing = false
 Citizen.CreateThread(function()
     while ESX == nil do
 	  TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-	  Citizen.Wait(100)
+	  Citizen.Wait(0)
     end
     ESX.PlayerData = ESX.GetPlayerData()
 end)
@@ -17,7 +17,7 @@ AddEventHandler('fizzfau-banktruck:onUse', function()
     local distance = #(playerCoords - veh_coords)
     local model = GetEntityModel(closestVeh)
     if distance <= 5 then
-        if model == "stockade" then
+        if model == `stockade` then
             local plate = GetVehicleNumberPlateText(closestVeh)
             TriggerServerEvent('fizzfau-moneytruck:checkRob', plate, closestVeh)
         end
@@ -41,7 +41,7 @@ AddEventHandler('fizzfau-moneytruck:startRob', function(vehicle)
     local coords = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -4.25, 0.0)
     SetPlayerCoord(ped, coords, vehicle)
     TaskPlayAnim(ped, dict, anim, 8.0, 8.0, -1, 0, 0, 0, 0, 0)
-    local cancelled = exports["hsn-bar"]:taskBar(3000, "Kart Okutuluyor") -- Change taskbar here
+    local cancelled = exports["hsn-bar"]:taskBar(3000, "Kart Okutuluyor") -- Taskbar
     Dispatch(coords)
     ClearPedTasks(ped)
     CreateGuards(vehicle, ped)
@@ -65,23 +65,23 @@ AddEventHandler('fizzfau-moneytruck:anim', function()
             Citizen.Wait(25)
         end
     end)
-    exports["hsn-bar"]:taskBar(30000, "Toplanıyor") -- Change taskbar here
+    exports["hsn-bar"]:taskBar(30000, "Toplanıyor") -- Taskbar
 end)
 
 function Dispatch(coords)
     local street1 = GetStreetNameAtCoord(coords.x, coords.y, coords.z, Citizen.ResultAsInteger(), Citizen.ResultAsInteger())
     local streetName = (GetStreetNameFromHashKey(street1))
-    local playerGender = "Kadın"
-    TriggerServerEvent('esx_outlawalert:banka-arac', { -- Change dispatch here
+    local playerGender = "Kadın" -- Sex
+    TriggerServerEvent('esx_outlawalert:banka-arac', { -- Police notification
         x = ESX.Math.Round(coords.x, 1),
         y = ESX.Math.Round(coords.y, 1),
         z = ESX.Math.Round(coords.z, 1)
-    }, streetName, playerGender)
+      }, streetName, playerGender)
 end
 
 function CreateGuards(vehicle, ped)
     local peds = {}
-    local hashKey = "ig_casey"
+    local hashKey = `ig_casey`
     RequestModel(hashKey)
     while not HasModelLoaded(hashKey) do
         RequestModel(hashKey)
@@ -90,7 +90,7 @@ function CreateGuards(vehicle, ped)
     for i =1, 3 do
         peds[i] = CreatePedInsideVehicle(vehicle, 0xF50B51B7, hashKey, i - 1 , 1, 1)
         SetPedShootRate(peds[i],  750)
-        GiveWeaponToPed(peds[i],"WEAPON_SMG", 150, true, true)
+        GiveWeaponToPed(peds[i], `WEAPON_SMG`, 150, true, true)
         SetPedCombatAttributes(peds[i], 46, true)
         SetPedFleeAttributes(peds[i], 0, 0)
         SetPedAsEnemy(peds[i],true)
@@ -100,7 +100,7 @@ function CreateGuards(vehicle, ped)
         SetPedCombatMovement(peds[i], 3)
         -- TaskCombatPed(peds[i], ped, 0, 16)
         TaskLeaveVehicle(peds[i], vehicle, 0)
-        SetPedRelationshipGroupHash(peds[i], "HATES_PLAYER")
+        SetPedRelationshipGroupHash(peds[i], `HATES_PLAYER`)
     end
     Citizen.Wait(1000)
     SetVehicleDoorOpen(vehicle,2,0,0)
@@ -109,7 +109,6 @@ function CreateGuards(vehicle, ped)
 end
 
 function DrawRob(vehicle)
-    local ped = PlayerPedId()
     Citizen.CreateThread(function()
         while true do
             local wait = 750
@@ -117,13 +116,14 @@ function DrawRob(vehicle)
                 local health = GetEntityHealth(vehicle)
                 if health > 10 then
                     wait = 100
+                    local ped = PlayerPedId()
                     local coords = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -4.25, 0.0)
                     local pcoords = GetEntityCoords(ped)
                     local distance = #(pcoords - coords)
                     if distance <= 3.5 then
                         wait = 0
-                        DrawText3Ds(coords.x, coords.y, coords.z, "E - Topla")
-                        if IsControlJustPressed(0, 46) then
+                        DrawText3Ds(coords.x, coords.y, coords.z, "E - Topla") -- Text 3d
+                        if IsControlJustPressed(0, 46) then -- Key to open
                             SetPlayerCoord(ped, coords, vehicle)
                             TriggerServerEvent('fizzfau-moneytruck:server:startRob')
                             TriggerEvent('fizzfau-moneytruck:anim')
@@ -138,8 +138,8 @@ function DrawRob(vehicle)
 end
 
 function DrawText3Ds(x,y,z,text)
-    local onScreen,_x,_y  =World3dToScreen2d(x,y,z)
-    local px,py,pz = table.unpack(GetGameplayCamCoords())
+    local onScreen,_x,_y=World3dToScreen2d(x,y,z)
+    local px,py,pz=table.unpack(GetGameplayCamCoords())
     SetTextScale(0.35, 0.35)
     SetTextFont(4)
     SetTextProportional(1)
@@ -160,7 +160,7 @@ end
 RegisterNetEvent('esx:onPlayerDeath')
 AddEventHandler('esx:onPlayerDeath', function()
     robbing = false
-    exports["hsn-bar"]:closeGui() -- Change taskbar here
+    exports["hsn-bar"]:closeGui() -- Taskbar
     TriggerServerEvent('fizzfau-moneytruck:onPlayerDeath')
 end)
 
