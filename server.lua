@@ -3,26 +3,26 @@ Vehicles = {}
 isDead = {}
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
-ESX.RegisterUsableItem("securitygreen", function(source)
-    TriggerClientEvent("fizzfau-banktruck:onUse", source)
+ESX.RegisterUsableItem('securitygreen', function(source) -- Item
+    TriggerClientEvent('fizzfau-banktruck:onUse', source)
 end)
 
-RegisterServerEvent("fizzfau-moneytruck:checkRob")
-AddEventHandler("fizzfau-moneytruck:checkRob", function(plate, vehicle)
+RegisterServerEvent('fizzfau-moneytruck:checkRob')
+AddEventHandler('fizzfau-moneytruck:checkRob', function(plate, vehicle)
     if CountCops() >= Config.PoliceAmount then
         if Vehicles[plate] == nil then 
             Vehicles[plate] = true
-            TriggerClientEvent("fizzfau-moneytruck:startRob", source, vehicle)
+            TriggerClientEvent('fizzfau-moneytruck:startRob', source, vehicle)
         else
-            TriggerClientEvent("notification", source, "Bu araç zaten soyulmuş!")
+            TriggerClientEvent('notification', source, 'Bu araç zaten soyulmuş!')
         end
     else
-        TriggerClientEvent("notification", source, "Yeterli polis yok!")
+        TriggerClientEvent('notification', source, 'Yeterli polis yok!')
     end
 end)
 
-RegisterServerEvent("fizzfau-moneytruck:server:startRob")
-AddEventHandler("fizzfau-moneytruck:server:startRob", function()
+RegisterServerEvent('fizzfau-moneytruck:server:startRob')
+AddEventHandler('fizzfau-moneytruck:server:startRob', function()
     StartRobbing(source)
 end)
     
@@ -31,7 +31,7 @@ function CountCops()
     local count = 0
     for i =1, #players do
         local player = ESX.GetPlayerFromId(players[i])
-        if player.job.name == "police" then
+        if player.job.name == 'police' then
             count = count + 1
         end
     end
@@ -62,16 +62,16 @@ function StartRobbing(source)
                 return
             end
         end
-        TriggerClientEvent("fizzfau-moneytruck:endRobbery", source)
+        TriggerClientEvent('fizzfau-moneytruck:endRobbery', source)
     end
 end
 
-RegisterServerEvent("fizzfau-moneytruck:onPlayerDeath")
-AddEventHandler("fizzfau-moneytruck:onPlayerDeath", function()
+RegisterServerEvent('fizzfau-moneytruck:onPlayerDeath')
+AddEventHandler('fizzfau-moneytruck:onPlayerDeath', function()
     isDead[source] = true
 end)
 
-RegisterServerEvent("fizzfau-moneytruck:playerSpawned")
-AddEventHandler("fizzfau-moneytruck:playerSpawned", function()
+RegisterServerEvent('fizzfau-moneytruck:playerSpawned')
+AddEventHandler('fizzfau-moneytruck:playerSpawned', function()
     isDead[source] = false
 end)
